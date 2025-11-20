@@ -1,8 +1,8 @@
-# 使用 Node 16 兼容依赖
-FROM node:16-alpine AS build-web
+FROM node:18-alpine AS build-web
 ADD . /app
 WORKDIR /app/web
-RUN yarn && yarn build
+# 忽略引擎检查以兼容旧依赖
+RUN yarn --ignore-engines && yarn build --ignore-engines
 
 # Build jar - 使用支持多平台的Gradle镜像
 FROM gradle:7.6-jdk8 AS build-env
