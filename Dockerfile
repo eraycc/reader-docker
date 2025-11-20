@@ -1,4 +1,5 @@
-FROM node:16-alpine AS build-web  # 从 18 改为 16
+# 使用 Node 16 兼容依赖
+FROM node:16-alpine AS build-web
 ADD . /app
 WORKDIR /app/web
 RUN yarn && yarn build
