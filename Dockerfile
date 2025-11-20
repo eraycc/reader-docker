@@ -1,7 +1,6 @@
-FROM node:18-alpine AS build-web
+FROM node:16-alpine AS build-web  # 从 18 改为 16
 ADD . /app
 WORKDIR /app/web
-# Build web
 RUN yarn && yarn build
 
 # Build jar - 使用支持多平台的Gradle镜像
@@ -15,15 +14,11 @@ RUN \
     mv ./build/libs/*.jar ./build/libs/reader.jar
 
 FROM amazoncorretto:8-alpine-jre
-# Install base packages
 RUN \
     apk add --no-cache ca-certificates tini tzdata; \
     update-ca-certificates; \
     rm -rf /var/cache/apk/*;
-
-# 时区
 ENV TZ=Asia/Shanghai
-
 EXPOSE 8080
 ENTRYPOINT ["/sbin/tini", "--"]
 COPY --from=build-env /app/build/libs/reader.jar /app/bin/reader.jar
